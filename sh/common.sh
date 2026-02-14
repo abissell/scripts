@@ -1,3 +1,5 @@
+#!/bin/sh
+
 # common.sh
 # Copyright (C) 2023 Andrew Bissell
 #
@@ -69,7 +71,7 @@ reboot_for_changes() {
   echo "Reboot needed for ${changes} to take effect."
   read -p "Would you like to reboot now? " yn
   case $yn in
-    [Yy]* ) echo "Rebooting ..." && sleep 3 && eval "${reboot_command}";;
+    [Yy]* ) echo "Rebooting using command '${reboot_command}'..." && sleep 3 && eval "${reboot_command}" && sleep 5;;
     * ) echo "Ok, proceeding without reboot.";;
   esac
   echo
@@ -87,7 +89,7 @@ add_line_to_file_if_not_present() {
   echo
   echo "Adding line: '${line}' to file ${filename} if not present:"
   if [ -f "$filename" ]; then
-    if [ grep -q "${line}" $filename ]; then
+    if grep -q "${line}" "${filename}"; then
       echo "Line was already in file, will not add it."
       echo
     else
@@ -103,7 +105,8 @@ add_line_to_file_if_not_present() {
 }
 
 set_step() {
+  mkdir -p tmp
   local newstep="$1"
-  echo "${newstep}" > .step.txt
+  echo "${newstep}" > tmp/step.txt
   step="${newstep}"
 }
