@@ -110,3 +110,49 @@ set_step() {
   echo "${newstep}" > tmp/step.txt
   step="${newstep}"
 }
+
+pass_back_shell_rc_filename() {
+  shell_rc_file_base=$(basename "${SHELL}")
+  case "${shell_rc_file_base}" in
+    zsh)
+      if [ -z "${ZDOTDIR}" ]; then
+        zsh_files_path="${HOME}"
+      else
+        zsh_files_path="${ZDOTDIR}"
+      fi
+
+      eval "$1='${zsh_files_path}/.zshrc'"
+      ;;
+    bash)
+      eval "$1='${HOME}/.bashrc'"
+      ;;
+    *)
+      echo "Couldn't determine rc file for ${SHELL}!"
+      exit 1
+      ;;
+  esac
+}
+
+pass_back_shell_rc_filenames() {
+  shell_rc_file_base=$(basename "${SHELL}")
+  case "${shell_rc_file_base}" in
+    zsh)
+      if [ -z "${ZDOTDIR}" ]; then
+        zsh_files_path="${HOME}"
+      else
+        zsh_files_path="${ZDOTDIR}"
+      fi
+
+      eval "$1='${zsh_files_path}/.zshrc'"
+      eval "$2='${zsh_files_path}/.zprofile'"
+      ;;
+    bash)
+      eval "$1='${HOME}/.bashrc'"
+      eval "$2='${HOME}/.bash_profile'"
+      ;;
+    *)
+      echo "Couldn't determine rc and login profile files for ${SHELL}!"
+      exit 1
+      ;;
+  esac
+}
